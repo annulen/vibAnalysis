@@ -584,7 +584,7 @@ def printResults(o,s):
 			elif(a=='VMLD'):
 				o.write("\n\n*** Vibrational Mode Linear Decomposition (VMLD) ***\n")
 			elif(a=='VMBLD'):
-				o.write("\n\n*** Vibrational Mode Bayesian Linear Decomposition (VMBLD) ***\n")
+				o.write("\n\n*** Vibrational Mode Lasso Decomposition ***\n")
 			elif(a=='VMARD'):
 				o.write("\n\n*** Vibrational Mode Automatic Relevance Determination (VMARD) ***\n")
 			n=1
@@ -632,7 +632,7 @@ def printResults(o,s):
 			elif(a=='VMLD'):
 				o.write("\n*** End of Vibrational Mode Linear Decomposition (VMLD) ***\n")
 			elif(a=='VMBLD'):
-				o.write("\n*** End of Vibrational Mode Bayesian Linear Decomposition (VMBLD) ***\n")
+				o.write("\n*** End of Vibrational Mode Lasso Decomposition ***\n")
 			elif(a=='VMARD'):
 				o.write("\n*** End of Vibrational Mode Automatic Relevance Determination (VMARD) ***\n")
 
@@ -1019,20 +1019,20 @@ def VMBLD(of,s):
 	Inputs:
 	- of: handle for the output file
 	- s:  the system"""
-	of.write("\nStarting: Vibrational Mode Bayesian Linear Decomposition\n")
+	of.write("\nStarting: Vibrational Mode Lasso Linear Decomposition\n")
 	if(len(s.intcoords)>len(s.vibrations)):
 		of.write(" More internal coordinates than frequencies, expect\n")
 		of.write(" some (possibly unwanted) redundancy in the results\n")
+	gram = np.empty(shape=(s.S.shape[1], s.S.shape[1]), dtype=s.S.dtype, order="C")
+	np.dot(s.S.T, s.S, out=gram)
 	for i in range(len(s.vibrations)):
 		o=[]
-		# fit_intercept=False would make more sense but BayesianRidge
-		# performs extremely poor with it
-		regressor=sklm.BayesianRidge(compute_score=True,n_iter=5000,fit_intercept=True)
+		regressor=sklm.Lasso(precompute=gram,alpha=1e-5,fit_intercept=False,max_iter=5000)
 		regressor.fit(s.S,s.ADM[:,i])
 		r2=np.corrcoef(s.ADM[:,i],regressor.predict(s.S))[0,1]**2
 		exvar=skmt.explained_variance_score(s.ADM[:,i],regressor.predict(s.S))
 		s.vibrations[i].addVMBLD(regressor.coef_, r2, exvar)
-	of.write("\nEnding: Vibrational Mode Bayesian Linear Decomposition\n")
+	of.write("\nEnding: Vibrational Mode Lasso Linear Decomposition\n")
 
 def VMARD(of,s):
 	""" Performs a Linear Decomposition of the vibrational modes 
