@@ -1019,7 +1019,8 @@ def VMBLD(of,s):
 	Inputs:
 	- of: handle for the output file
 	- s:  the system"""
-	of.write("\nStarting: Vibrational Mode Lasso Linear Decomposition\n")
+	alpha = 5e-5
+	of.write("\nStarting: Vibrational Mode Lasso Linear Decomposition %e\n" % alpha)
 	if(len(s.intcoords)>len(s.vibrations)):
 		of.write(" More internal coordinates than frequencies, expect\n")
 		of.write(" some (possibly unwanted) redundancy in the results\n")
@@ -1027,7 +1028,7 @@ def VMBLD(of,s):
 	np.dot(s.S.T, s.S, out=gram)
 	for i in range(len(s.vibrations)):
 		o=[]
-		regressor=sklm.Lasso(precompute=gram,alpha=1e-5,fit_intercept=False,max_iter=5000)
+		regressor=sklm.Lasso(precompute=gram,alpha=alpha,fit_intercept=False,max_iter=5000)
 		regressor.fit(s.S,s.ADM[:,i])
 		r2=np.corrcoef(s.ADM[:,i],regressor.predict(s.S))[0,1]**2
 		exvar=skmt.explained_variance_score(s.ADM[:,i],regressor.predict(s.S))
