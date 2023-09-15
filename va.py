@@ -17,6 +17,7 @@ import sys
 import logging
 import sklearn.linear_model as sklm
 import sklearn.metrics as skmt
+from tqdm import tqdm
 
 # General Options
 Opts={}
@@ -1044,7 +1045,7 @@ def VMARD(of,s):
 	if(len(s.intcoords)>len(s.vibrations)):
 		of.write(" More internal coordinates than frequencies, expect\n")
 		of.write(" some (possibly unwanted) redundancy in the results\n")
-	for i in range(len(s.vibrations)):
+	for i in tqdm(range(len(s.vibrations)), desc="VMARD", ascii=True, ncols=100):
 		o=[]
 		regressor=sklm.ARDRegression(compute_score=True,n_iter=5000,fit_intercept=False)
 		regressor.fit(s.S,s.ADM[:,i])
