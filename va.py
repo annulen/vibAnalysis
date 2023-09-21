@@ -868,6 +868,11 @@ def makeIC(o,useric=[]):
 						if(candidate!=[]):
 							if(Opts['doTors']):
 								ltors.append(candidate)
+	# Swap atoms in bond coordinates so that heavier atom is always first
+	for bond in lbonds:
+		atomic_no = lambda i: Symbols.index(o.symbol[i].lower())
+		if atomic_no(bond[0]) < atomic_no(bond[1]):
+			bond[0], bond[1] = bond[1], bond[0]
 	#calc S for bonds
 	o.S=np.zeros((3*natoms,len(lbonds)+len(langles)+len(loop)+len(ltors)))
 	o.intcoords=[]
