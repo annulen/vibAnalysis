@@ -612,8 +612,8 @@ def printResults(o,s):
 					if(np.abs(w[j])>=cut):
 						gwr[s.intcoords[j][0]] += np.abs(w[j])
 						natts += 1
-						of.write(" %+8.4f (%5.1f%%) %s\n"%(vib.analysis[a][j],
-						np.abs(w[j])*100,modeStr(s.intcoords[j],s.symbol)))
+						of.write(" %+8.4f (%5.1f) %s\n"%(vib.analysis[a][j],
+						w[j]*100,modeStr(s.intcoords[j],s.symbol)))
 				if(natts==0):
 					of.write(" Mode too disperse!\n")
 					of.write(" Largest Contribution: \n")
