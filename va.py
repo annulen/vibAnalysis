@@ -794,21 +794,6 @@ def makeIC(o,useric=[]):
 	voop=[]    #amplitudes for out of plane
 	ltors=[]   #indexes for torsions
 	vtors=[]   #amplitudes for torsions
-	# add user-defined ICs
-	if(useric!=[]):
-		for i in range(len(useric)):
-			if(useric[i][0]==1):
-				lbonds.append(useric[i][1:])
-				valence[useric[i][1]] += 1
-				valence[useric[i][2]] += 1
-				coordination[useric[i][1]].append(useric[i][2])
-				coordination[useric[i][2]].append(useric[i][1])
-			elif(useric[i][0]==2):
-				langles.append(useric[i][1:])
-			elif(useric[i][0]==3):
-				loop.append(useric[i][1:])
-			elif(useric[i][0]==4):
-				ltors.append(useric[i][1:])
 	# search for bonds
 	for i in range(natoms):
 		r1=Raddi[Symbols.index(o.symbol[i].lower())]
@@ -889,6 +874,21 @@ def makeIC(o,useric=[]):
 						if(candidate!=[]):
 							if(Opts['doTors']):
 								ltors.append(candidate)
+	# add user-defined ICs
+	if(useric!=[]):
+		for i in range(len(useric)):
+			if(useric[i][0]==1):
+				lbonds.append(useric[i][1:])
+				valence[useric[i][1]] += 1
+				valence[useric[i][2]] += 1
+				coordination[useric[i][1]].append(useric[i][2])
+				coordination[useric[i][2]].append(useric[i][1])
+			elif(useric[i][0]==2):
+				langles.append(useric[i][1:])
+			elif(useric[i][0]==3):
+				loop.append(useric[i][1:])
+			elif(useric[i][0]==4):
+				ltors.append(useric[i][1:])
 	# Swap atoms in bond coordinates so that heavier atom is always first
 	for bond in lbonds:
 		atomic_no = lambda i: Symbols.index(o.symbol[i].lower())
