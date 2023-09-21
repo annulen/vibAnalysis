@@ -531,6 +531,18 @@ def modeStr(mode,symbs):
 		o="TORSION %s%d %s%d %s%d %s%d"%(symbs[mode[1]].capitalize(),mode[1]+1,symbs[mode[2]].capitalize(),mode[2]+1,symbs[mode[3]].capitalize(),mode[3]+1,symbs[mode[4]].capitalize(),mode[4]+1)
 	return(o)
 
+def modeStr2(mode,symbs):
+	"""returns a formatted string describing mode"""
+	o=""
+	if(mode[0]==1): # bond
+		if symbs[mode[2]].lower() == 'h':
+			o="%s%d_%d" % (symbs[mode[1]].lower(), mode[1]+1, mode[2]+1)
+		else:
+			o="%s%d_%s%d" % (symbs[mode[1]].lower(), mode[1]+1, symbs[mode[2]].lower(), mode[2]+1)
+	else:
+		o = '"' + modeStr(mode, symbs) + '"'
+	return(o)
+
 def punchIC(o,s):
 	"""Punches a list of internal coordinates and their
 	meassured values to file o"""
@@ -607,6 +619,15 @@ def printResults(o,s):
 				gw=np.zeros(5)
 				gwr=np.zeros(5)
 				natts=0
+
+				of.write("  %d: { " % (n-1))
+				res = []
+				for j in widx:
+					if (np.abs(w[j]) >= cut):
+						res.append('%8s: %5.1f' % (modeStr2(s.intcoords[j], s.symbol), w[j] * 100))
+				of.write(', '.join(res))
+				of.write(" }\n")
+
 				for j in widx:
 					gw[s.intcoords[j][0]] += np.abs(w[j])
 					if(np.abs(w[j])>=cut):
