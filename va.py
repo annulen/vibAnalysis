@@ -41,6 +41,7 @@ Opts['aniMode']=[]
 Opts['anic']=[]
 Opts['oopp']=True
 Opts['oopTol']=np.deg2rad(5.0)
+Opts['minFreq'] = 1000
 
 Linear=False
 Transition=False
@@ -601,6 +602,9 @@ def printResults(o,s):
 				o.write("\n\n*** Vibrational Mode Automatic Relevance Determination (VMARD) ***\n")
 			n=1
 			for vib in s.vibrations:
+				# FIXME: subset of frequencies
+				if vib.frequency < Opts['minFreq']:
+					break
 				o.write('\n'+vib.string(n)+'\n')
 				#calculate weights
 				w=vib.analysis[a]/np.sum(np.abs(vib.analysis[a]))
@@ -1073,6 +1077,9 @@ def VMARD(of,s):
 		of.write(" More internal coordinates than frequencies, expect\n")
 		of.write(" some (possibly unwanted) redundancy in the results\n")
 	for i in tqdm(range(len(s.vibrations)), desc="VMARD", ascii=True, ncols=100):
+		# FIXME: subset of frequencies
+		if s.vibrations[i].frequency < Opts['minFreq']:
+			break
 		o=[]
 		regressor=sklm.ARDRegression(compute_score=True,n_iter=5000,fit_intercept=False)
 		regressor.fit(s.S,s.ADM[:,i])
