@@ -1350,6 +1350,7 @@ Options:
 	makeIC(system,useric)
 	# normalize S
 	if(Opts['doMWS']):
+		of.write("\nMass-weighting internal coordinates...\n\n")
 		system.massWeightS()
 	system.normalizeS()
 	of.write("Internal Coordinates Generated: %d\n"%(len(system.intcoords)))
