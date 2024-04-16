@@ -1081,7 +1081,7 @@ def VMARD(of,s):
 		if s.vibrations[i].frequency < Opts['minFreq']:
 			break
 		o=[]
-		regressor=sklm.ARDRegression(compute_score=True,n_iter=5000,fit_intercept=False)
+		regressor=sklm.ARDRegression(compute_score=True,max_iter=5000,fit_intercept=False)
 		regressor.fit(s.S,s.ADM[:,i])
 		r2=np.corrcoef(s.ADM[:,i],regressor.predict(s.S))[0,1]**2
 		exvar=skmt.explained_variance_score(s.ADM[:,i],regressor.predict(s.S))
